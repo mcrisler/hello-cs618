@@ -20,7 +20,8 @@ export function CreatePost() {
     createPostMutation.mutate();
   };
 
-  if (!token) return <div>Please log in to create new posts.</div>;
+  if (!token)
+    return <div>Please log in to share all of your favorite recipes!</div>;
 
   return (
     <form onSubmit={handleSubmit}>
