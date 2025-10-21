@@ -12,6 +12,8 @@ const post = new Post({
   author: "James Harden",
   contents: "This is my new post.",
   tags: ["frontend"],
+  image: "",
+  ingredients: "N/A",
 });
 
 await post.save();
