@@ -9,7 +9,7 @@ export function PostSorting({
 }) {
   return (
     <div>
-      <label htmlFor="sortBy">Sort By: </label>
+      <label htmlFor="sortBy">Sort by Date: </label>
       <select
         name="sortBy"
         id="sortBy"
@@ -23,15 +23,15 @@ export function PostSorting({
         ))}
       </select>
       {" / "}
-      <label htmlFor="sortOrder">Sort Order: </label>
+      <label htmlFor="sortOrder">Sort by Time: </label>
       <select
         name="sortOrder"
         id="sortOrder"
         value={orderValue}
         onChange={(e) => onOrderChange(e.target.value)}
       >
-        <option value={"ascending"}>ascending</option>
-        <option value={"descending"}>descending</option>
+        <option value={"ascending"}>Earliest</option>
+        <option value={"descending"}>Latest</option>
       </select>
     </div>
   );

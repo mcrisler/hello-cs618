@@ -10,7 +10,8 @@ export function Header() {
     return (
       <div>
         <h1>Welcome to My Recipe Blog!</h1>
-        Logged in as <User id={sub} />
+        Username: <User id={sub} />
+        <br />
         <br />
         <button onClick={() => setToken(null)}>Logout</button>
       </div>
