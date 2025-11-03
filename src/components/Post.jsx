@@ -1,19 +1,40 @@
 import PropTypes from "prop-types";
 import { User } from "./User.jsx";
+import { Link } from "react-router-dom";
 
-export function Post({ title, contents, author: userId, image, ingredients }) {
+import slug from "slug";
+
+export function Post({
+  title,
+  contents,
+  author,
+  image,
+  ingredients,
+  _id,
+  fullPost = false,
+}) {
   return (
     <article>
-      <h1>{title}</h1>
-      {image && (
-        <img
-          src={image}
-          alt=""
-          style={{ maxWidth: "500px", maxHeight: "400px" }}
-        />
+      {fullPost ? (
+        <h3>{title}</h3>
+      ) : (
+        <Link to={`/posts/${_id}/${slug(title)}`}>
+          <h3>{title}</h3>
+        </Link>
       )}
-      <br />
-      {ingredients && (
+
+      {image && (
+        <>
+          <img
+            src={image}
+            alt=""
+            style={{ maxWidth: "400px", maxHeight: "300px" }}
+          />
+          <br />
+        </>
+      )}
+
+      {fullPost && ingredients && (
         <div
           style={{
             maxWidth: "1000px",
@@ -25,8 +46,10 @@ export function Post({ title, contents, author: userId, image, ingredients }) {
           <div>{ingredients}</div>
         </div>
       )}
+
       <br />
-      {contents && (
+
+      {fullPost && contents && (
         <div
           style={{
             maxWidth: "1000px",
@@ -38,20 +61,23 @@ export function Post({ title, contents, author: userId, image, ingredients }) {
           <div>{contents}</div>
         </div>
       )}
-      {userId && (
+
+      {author && (
         <em>
-          <br />
-          <br />
-          Published by <User id={userId} />
+          {fullPost && <br />}
+          Written by <User id={author} />
         </em>
       )}
     </article>
   );
 }
+
 Post.propTypes = {
   title: PropTypes.string.isRequired,
   contents: PropTypes.string,
   author: PropTypes.string,
   image: PropTypes.string,
   ingredients: PropTypes.string,
+  _id: PropTypes.string.isRequired,
+  fullPost: PropTypes.bool,
 };
