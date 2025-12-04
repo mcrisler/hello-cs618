@@ -1,7 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { createPost } from "../api/posts.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
+
+import { Link } from "react-router-dom";
+import slug from "slug";
+
+import { useMutation as useGraphQLMutation } from "@apollo/client/react/index.js";
+import {
+  CREATE_POST,
+  GET_POSTS,
+  GET_POSTS_BY_AUTHOR,
+} from "../api/graphql/posts.js";
 
 export function CreatePost() {
   const [token] = useAuth();
@@ -10,17 +18,15 @@ export function CreatePost() {
   const [image, setImage] = useState("");
   const [ingredients, setIngredients] = useState("");
 
-  const queryClient = useQueryClient();
-
-  const createPostMutation = useMutation({
-    mutationFn: () =>
-      createPost(token, { title, contents, tags: [], image, ingredients }),
-    onSuccess: () => queryClient.invalidateQueries(["posts"]),
+  const [createPost, { loading, data }] = useGraphQLMutation(CREATE_POST, {
+    variables: { title, contents },
+    context: { headers: { Authorization: `Bearer ${token}` } },
+    refetchQueries: [GET_POSTS, GET_POSTS_BY_AUTHOR],
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    createPostMutation.mutate();
+    createPost();
   };
 
   if (!token)
@@ -75,9 +81,21 @@ export function CreatePost() {
       <br />
       <input
         type="submit"
-        value={createPostMutation.isPending ? "Creating..." : "Publish"}
-        disabled={!title || createPostMutation.isPending}
+        value={loading ? "Creating..." : "Publish"}
+        disabled={!title || loading}
       />
+      {data?.createPost ? (
+        <>
+          <br />
+          Post{" "}
+          <Link
+            to={`/posts/${data.createPost.id}/${slug(data.createPost.title)}`}
+          >
+            {data.createPost.title}
+          </Link>{" "}
+          created successfully!
+        </>
+      ) : null}
     </form>
   );
 }
