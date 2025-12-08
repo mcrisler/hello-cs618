@@ -1,3 +1,4 @@
+// backend/src/graphql/query.js
 import {
   getPostById,
   listAllPosts,

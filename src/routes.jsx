@@ -1,3 +1,4 @@
+// src/routes.jsx
 import { Blog } from "./pages/Blog.jsx";
 import { Signup } from "./pages/Signup.jsx";
 import { Login } from "./pages/Login.jsx";

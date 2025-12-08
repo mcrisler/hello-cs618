@@ -1,3 +1,4 @@
+// backend/src/graphql/post.js
 import { getUserInfoById } from "../services/users.js";
 export const postSchema = `#graphql
  type Post {
@@ -8,6 +9,8 @@ export const postSchema = `#graphql
  tags: [String!]
  createdAt: Float
  updatedAt: Float
+ likedBy: [ID!] 
+ likeCount: Int! 
  }
 `;
 export const postResolver = {

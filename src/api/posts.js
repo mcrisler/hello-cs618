@@ -1,3 +1,4 @@
+// src/api/posts.js
 export const getPosts = async (queryParams) => {
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/posts?` +
@@ -26,4 +27,22 @@ posts`,
     },
   );
   return await res.json();
+};
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+export const likePost = async (postId) => {
+  const res = await fetch(`${BACKEND_URL}/posts/${postId}/like`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to like post");
+  }
+
+  return res.json();
 };

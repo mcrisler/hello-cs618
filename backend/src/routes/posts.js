@@ -1,3 +1,4 @@
+// backend/src/routes/posts.js
 import {
   listAllPosts,
   listPostsByAuthor,
@@ -6,6 +7,7 @@ import {
   createPost,
   updatePost,
   deletePost,
+  likePost,
 } from "../services/posts.js";
 
 import { requireAuth } from "../middleware/jwt.js";
@@ -67,6 +69,15 @@ export function postsRoutes(app) {
       return res.status(204).end();
     } catch (err) {
       console.error("error deleting post", err);
+      return res.status(500).end();
+    }
+  });
+  app.post("/api/v1/posts/:id/like", requireAuth, async (req, res) => {
+    try {
+      const post = await likePost(req.params.id, req.auth.sub);
+      return res.json(post);
+    } catch (err) {
+      console.error("error liking post", err);
       return res.status(500).end();
     }
   });

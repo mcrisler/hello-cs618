@@ -1,23 +1,30 @@
+// src/pages/ViewPost.jsx
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { PostStats } from "../components/PostStats.jsx";
 import { Header } from "../components/Header.jsx";
 import { Post } from "../components/Post.jsx";
 import { getPostById } from "../api/posts.js";
+import { likePost } from "../api/likes.js";
 import { useEffect, useState } from "react";
 import { postTrackEvent } from "../api/events.js";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 import { getUserInfo } from "../api/users.js";
 
 import { Helmet } from "react-helmet-async";
 
 export function ViewPost({ postId }) {
+  const [token] = useAuth();
+  const queryClient = useQueryClient();
+
   const [session, setSession] = useState();
   const trackEventMutation = useMutation({
     mutationFn: (action) => postTrackEvent({ postId, action, session }),
     onSuccess: (data) => setSession(data?.session),
   });
+
   useEffect(() => {
     let timeout = setTimeout(() => {
       trackEventMutation.mutate("startView");
@@ -34,6 +41,25 @@ export function ViewPost({ postId }) {
     queryFn: () => getPostById(postId),
   });
   const post = postQuery.data;
+
+  const likeMutation = useMutation({
+    mutationFn: (id) => likePost(id, token),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["post", postId] });
+    },
+    onError: (error) => {
+      console.error("Failed to like post:", error);
+    },
+  });
+
+  const handleLike = () => {
+    if (!token) {
+      alert("Please log in to like this post!");
+      return;
+    }
+    likeMutation.mutate(postId);
+  };
+  const likeCount = post?.likedBy?.length ?? 0;
 
   const userInfoQuery = useQuery({
     queryKey: ["users", post?.author],
@@ -75,7 +101,15 @@ export function ViewPost({ postId }) {
       <hr />
       {post ? (
         <div>
-          <Post {...post} fullPost id={postId} author={userInfo} />
+          <Post
+            {...post}
+            fullPost
+            id={postId}
+            author={userInfo}
+            likes={likeCount}
+            onLike={handleLike}
+            isLiking={likeMutation.isPending}
+          />
           <hr />
           <PostStats postId={postId} />
         </div>
@@ -85,6 +119,7 @@ export function ViewPost({ postId }) {
     </div>
   );
 }
+
 ViewPost.propTypes = {
   postId: PropTypes.string.isRequired,
 };

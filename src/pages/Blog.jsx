@@ -1,3 +1,4 @@
+// src/pages/Blog.jsx
 import { PostList } from "../components/PostList.jsx";
 import { CreatePost } from "../components/CreatePost.jsx";
 import { PostFilter } from "../components/PostFilter.jsx";
@@ -46,7 +47,7 @@ export function Blog() {
       />
       <br />
       <PostSorting
-        fields={["createdAt", "updatedAt"]}
+        fields={["createdAt", "updatedAt", "likedBy.length"]}
         value={sortBy}
         onChange={(value) => setSortBy(value)}
         orderValue={sortOrder}

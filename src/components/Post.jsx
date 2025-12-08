@@ -1,3 +1,4 @@
+// src/components/Post.jsx
 import PropTypes from "prop-types";
 import { User } from "./User.jsx";
 import { Link } from "react-router-dom";
@@ -12,6 +13,9 @@ export function Post({
   ingredients,
   id,
   fullPost = false,
+  likes,
+  onLike,
+  isLiking,
 }) {
   return (
     <article>
@@ -62,12 +66,37 @@ export function Post({
         </div>
       )}
 
-      {author && (
-        <em>
-          {fullPost && <br />}
-          Written by <User {...author} />
-        </em>
+      {fullPost && (
+        <div
+          style={{ display: "flex", alignItems: "center", marginTop: "15px" }}
+        >
+          <button
+            onClick={onLike}
+            disabled={isLiking}
+            style={{
+              marginRight: "10px",
+              cursor: "pointer",
+              color: isLiking ? "grey" : "Blue",
+            }}
+          >
+            Like Post
+          </button>
+        </div>
       )}
+
+      <div>
+        <span style={{ marginRight: "5px" }}>
+          {likes !== undefined ? likes : 0} {likes === 1 ? "Like" : "Likes"}
+        </span>
+        {author && (
+          <>
+            <span style={{ margin: "0 5px" }}>|</span>
+            <em>
+              Written by <User {...author} />
+            </em>
+          </>
+        )}
+      </div>
     </article>
   );
 }
@@ -80,4 +109,7 @@ Post.propTypes = {
   ingredients: PropTypes.string,
   id: PropTypes.string.isRequired,
   fullPost: PropTypes.bool,
+  likes: PropTypes.number,
+  onLike: PropTypes.func,
+  isLiking: PropTypes.bool,
 };

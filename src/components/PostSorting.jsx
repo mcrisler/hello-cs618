@@ -1,4 +1,11 @@
+// src/components/PostSorting.jsx
 import PropTypes from "prop-types";
+
+const sortOptions = {
+  createdAt: "Publish Date",
+  updatedAt: "Last Updated",
+  "likedBy.length": "Like Count",
+};
 
 export function PostSorting({
   fields = [],
@@ -9,7 +16,7 @@ export function PostSorting({
 }) {
   return (
     <div>
-      <label htmlFor="sortBy">Sort by Date: </label>
+      <label htmlFor="sortBy">Filter by: </label>
       <select
         name="sortBy"
         id="sortBy"
@@ -18,20 +25,20 @@ export function PostSorting({
       >
         {fields.map((field) => (
           <option key={field} value={field}>
-            {field}
+            {sortOptions[field] || field}
           </option>
         ))}
       </select>
       {" / "}
-      <label htmlFor="sortOrder">Sort by Time: </label>
+      <label htmlFor="sortOrder">Order: </label>
       <select
         name="sortOrder"
         id="sortOrder"
         value={orderValue}
         onChange={(e) => onOrderChange(e.target.value)}
       >
-        <option value={"ascending"}>Earliest</option>
-        <option value={"descending"}>Latest</option>
+        <option value={"ascending"}>Bottom</option>
+        <option value={"descending"}>Top</option>
       </select>
     </div>
   );

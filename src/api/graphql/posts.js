@@ -1,3 +1,4 @@
+// src/api/graphql/posts.js
 import { gql } from "@apollo/client/core/index.js";
 
 export const POST_FIELDS = gql`
@@ -11,6 +12,8 @@ export const POST_FIELDS = gql`
     author {
       username
     }
+    likedBy
+    likeCount
   }
 `;
 

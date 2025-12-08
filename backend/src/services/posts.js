@@ -1,5 +1,7 @@
+// backend/src/services/posts.js
 import { Post } from "../db/models/post.js";
 import { User } from "../db/models/user.js";
+import mongoose from "mongoose";
 
 export async function createPost(
   userId,
@@ -20,7 +22,25 @@ async function listPosts(
   query = {},
   { sortBy = "createdAt", sortOrder = "descending" } = {},
 ) {
-  return await Post.find(query).sort({ [sortBy]: sortOrder });
+  let sortField = sortBy;
+  const sortValue = sortOrder === "descending" ? -1 : 1;
+
+  let sortCriteria = {};
+
+  if (sortField === "likedBy.length") {
+    sortField = "likeCount";
+
+    sortCriteria = {
+      [sortField]: sortValue,
+      createdAt: -1,
+    };
+  } else {
+    sortCriteria = {
+      [sortField]: sortValue,
+    };
+  }
+
+  return await Post.find(query).sort(sortCriteria);
 }
 
 export async function listAllPosts(options) {
@@ -52,3 +72,23 @@ export async function updatePost(userId, postId, { title, contents, tags }) {
 export async function deletePost(userId, postId) {
   return await Post.deleteOne({ _id: postId, author: userId });
 }
+export const likePost = async (postId, userId) => {
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
+    throw new Error("Invalid Post ID");
+  }
+
+  const updatedPost = await Post.findByIdAndUpdate(
+    postId,
+    {
+      $addToSet: { likedBy: userId },
+      $inc: { likeCount: 1 },
+    },
+    { new: true },
+  );
+
+  if (!updatedPost) {
+    throw new Error("Post not found");
+  }
+
+  return updatedPost;
+};
