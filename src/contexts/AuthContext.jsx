@@ -1,3 +1,4 @@
+//src/contexts/AuthContext.jsx
 import { createContext, useState, useContext } from "react";
 import PropTypes from "prop-types";
 export const AuthContext = createContext({

@@ -1,3 +1,4 @@
+//backend/src/graphql/index.js
 import { querySchema, queryResolver } from "./query.js";
 import { postSchema, postResolver } from "./post.js";
 import { userSchema, userResolver } from "./user.js";

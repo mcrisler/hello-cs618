@@ -1,3 +1,4 @@
+//backend/src/db/models/event.js
 import mongoose, { Schema } from "mongoose";
 const eventsSchema = new Schema(
   {

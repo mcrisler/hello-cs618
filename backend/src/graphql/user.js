@@ -1,3 +1,4 @@
+//backend/src/graphql/user.js
 import { listPostsByAuthor } from "../services/posts.js";
 export const userSchema = `#graphql
  type User {

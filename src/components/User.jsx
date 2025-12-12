@@ -1,3 +1,5 @@
+//src/components/User.jsx
+
 import PropTypes from "prop-types";
 export function User({ username }) {
   return <b>{username}</b>;

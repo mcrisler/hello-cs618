@@ -11,7 +11,6 @@ type Mutation {
 [String]): Post
  }
 `;
-
 export const mutationResolver = {
   Mutation: {
     signupUser: async (parent, { username, password }) => {

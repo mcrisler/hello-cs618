@@ -2,7 +2,7 @@
 import { Post } from "../db/models/post.js";
 import { User } from "../db/models/user.js";
 import mongoose from "mongoose";
-
+import { getSocketIO } from "../socket.js";
 export async function createPost(
   userId,
   { title, contents, tags, image, ingredients },
@@ -15,9 +15,18 @@ export async function createPost(
     image,
     ingredients,
   });
-  return await post.save();
+  const newPost = await post.save();
+  const io = getSocketIO();
+  io.emit("newPostNotification", {
+    title: newPost.title,
+    author: userId,
+    id: newPost._id,
+  });
+  console.log(
+    `Socket.IO emitted: newPostNotification for post "${newPost.title}"`,
+  );
+  return newPost;
 }
-
 async function listPosts(
   query = {},
   { sortBy = "createdAt", sortOrder = "descending" } = {},
@@ -39,10 +48,8 @@ async function listPosts(
       [sortField]: sortValue,
     };
   }
-
   return await Post.find(query).sort(sortCriteria);
 }
-
 export async function listAllPosts(options) {
   return await listPosts({}, options);
 }
@@ -85,10 +92,8 @@ export const likePost = async (postId, userId) => {
     },
     { new: true },
   );
-
   if (!updatedPost) {
     throw new Error("Post not found");
   }
-
   return updatedPost;
 };

@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthContextProvider } from "./contexts/AuthContext.jsx";
+import { SocketContextProvider } from "./contexts/SocketContext.jsx";
 
 import { ApolloProvider } from "@apollo/client/react/index.js";
 import { ApolloClient, InMemoryCache } from "@apollo/client/core/index.js";
@@ -13,13 +14,14 @@ const apolloClient = new ApolloClient({
 });
 
 import { HelmetProvider } from "react-helmet-async";
-
 export function App({ children }) {
   return (
     <HelmetProvider>
       <ApolloProvider client={apolloClient}>
         <QueryClientProvider client={queryClient}>
-          <AuthContextProvider>{children}</AuthContextProvider>
+          <AuthContextProvider>
+            <SocketContextProvider>{children}</SocketContextProvider>
+          </AuthContextProvider>
         </QueryClientProvider>
       </ApolloProvider>
     </HelmetProvider>

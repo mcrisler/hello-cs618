@@ -1,3 +1,4 @@
+//src/api/users.js
 export const signup = async ({ username, password }) => {
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/

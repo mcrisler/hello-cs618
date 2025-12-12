@@ -1,3 +1,4 @@
+//src/entry-server.jsx
 import ReactDOMServer from "react-dom/server";
 import { App } from "./App.jsx";
 import {

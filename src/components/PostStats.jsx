@@ -1,3 +1,5 @@
+//src/components/PostStats.jsx
+
 import { useQuery } from "@tanstack/react-query";
 import PropTypes from "prop-types";
 import {

@@ -1,3 +1,4 @@
+//backend/src/services/events.js
 import { v4 as uuidv4 } from "uuid";
 import { Event } from "../db/models/event.js";
 export async function trackEvent({

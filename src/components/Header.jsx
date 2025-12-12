@@ -1,3 +1,5 @@
+//src/components/Header.jsx
+
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { useAuth } from "../contexts/AuthContext.jsx";

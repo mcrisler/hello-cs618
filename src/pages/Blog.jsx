@@ -6,17 +6,47 @@ import { PostSorting } from "../components/PostSorting.jsx";
 
 import { Header } from "../components/Header.jsx";
 
-import { useState } from "react";
+import { useSocket } from "../contexts/SocketContext.jsx";
+import { useApolloClient } from "@apollo/client/react/index.js";
+
+import { useState, useEffect } from "react";
 
 import { useQuery as useGraphQLQuery } from "@apollo/client/react/index.js";
 import { GET_POSTS, GET_POSTS_BY_AUTHOR } from "../api/graphql/posts.js";
 
 import { Helmet } from "react-helmet-async";
+import { NotificationBanner } from "../components/Notification.jsx";
 
 export function Blog() {
   const [author, setAuthor] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("descending");
+  const [newPostNotification, setNewPostNotification] = useState(null);
+
+  const socket = useSocket();
+  const client = useApolloClient();
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewPost = (data) => {
+      setNewPostNotification(data);
+
+      client.cache.evict({ fieldName: "posts" });
+      client.cache.evict({ fieldName: "postsByAuthor" });
+      client.cache.gc();
+
+      setTimeout(() => {
+        setNewPostNotification(null);
+      }, 10000);
+    };
+
+    socket.on("newPostNotification", handleNewPost);
+
+    return () => {
+      socket.off("newPostNotification", handleNewPost);
+    };
+  }, [socket, client]);
 
   const postsQuery = useGraphQLQuery(author ? GET_POSTS_BY_AUTHOR : GET_POSTS, {
     variables: { author, options: { sortBy, sortOrder } },
@@ -33,6 +63,13 @@ export function Blog() {
         />
       </Helmet>
       <Header />
+      <br />
+      {newPostNotification && (
+        <NotificationBanner
+          title={newPostNotification.title}
+          postId={newPostNotification.id}
+        />
+      )}
       <br />
       <hr />
       <br />

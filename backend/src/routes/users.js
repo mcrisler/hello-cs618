@@ -1,3 +1,4 @@
+//backend/src/routes/users.js
 import { createUser, loginUser, getUserInfoById } from "../services/users.js";
 export function userRoutes(app) {
   app.get("/api/v1/users/:id", async (req, res) => {

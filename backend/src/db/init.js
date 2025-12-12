@@ -1,3 +1,4 @@
+//backend/src/db/init.js
 import mongoose from "mongoose";
 
 export function initDatabase() {
